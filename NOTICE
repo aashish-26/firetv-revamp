@@ -1,0 +1,6 @@
+Fire TV Revamp combines the CleanYourTV safety approach and Fire TV launcher work.
+Original MIT code: Gathin, https://github.com/Gathin23/cleanyourtv at c2d6e79381add9daa83e116882f6d6b130dc4a73
+Fire TV fork: itsmeterrylin, https://github.com/itsmeterrylin/fire-tv-cleanup at ab4d9bfbc51e48316d0a19583d579de0b3f44215
+Includes subsequent local launcher improvements and tests. Upstream copyright retained.
+Outfit and Open Sans fonts are separately licensed under SIL OFL; see licenses/.
+No personal media, device backups, signing keys or upstream installer scripts are distributed.

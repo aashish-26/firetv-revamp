@@ -1,0 +1,45 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.gathin.tvhome'
+    compileSdk 34
+
+    // Optional name for the greeting ("Good evening, Alex"): tvhome.userName=Alex in launcher/local.properties.
+    def localProps = new Properties()
+    def localFile = rootProject.file('local.properties')
+    if (localFile.exists()) localFile.withInputStream { localProps.load(it) }
+
+    defaultConfig {
+        resValue 'string', 'user_name', localProps.getProperty('tvhome.userName', '')
+        applicationId 'io.github.aashish26.firetvrevamp'
+        minSdk 26
+        targetSdk 29
+        versionCode 1
+        versionName '0.1.0'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    lint {
+        // Private Fire OS 7 sideload; not a Google Play submission. Retain target
+        // behavior until a newer target is separately tested on this firmware.
+        disable 'ExpiredTargetSdkVersion'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
+}

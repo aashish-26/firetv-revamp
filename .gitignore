@@ -1,0 +1,12 @@
+.local/
+.private/
+backups/
+*.jks
+*.keystore
+local.properties
+.gradle/
+**/build/
+__pycache__/
+dist/
+.DS_Store
+build.log
