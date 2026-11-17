@@ -6,6 +6,10 @@ A lightweight, offline Fire TV launcher with glass-style cards, a customizable d
 
 **An Android app, not replacement firmware.** Amazon Home remains installed and enabled. Optional accessibility redirection is experimental and can be interrupted by Fire OS updates. No root, network blocking or system debloat runs automatically.
 
+## Coming from YouTube?
+
+Read the [viewer quick start](docs/youtube-viewers.md), [wallpaper details](docs/wallpapers.md), and [planned enhancements](docs/roadmap.md). The video shows a personal build; the public preview uses original static artwork and does not include live wallpaper.
+
 ## Try it
 
 Download the APK and SHA256SUMS from [Releases](https://github.com/aashish-26/firetv-revamp/releases). Android 8 / API 26 minimum; Android 9 / Fire OS 7 is the primary development target.
