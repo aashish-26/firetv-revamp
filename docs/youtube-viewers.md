@@ -37,7 +37,7 @@ shasum -a 256 -c SHA256SUMS
 sha256sum -c SHA256SUMS
 ```
 
-On Windows PowerShell use `Get-FileHash .\firetv-revamp-0.2.0.apk -Algorithm SHA256` and compare with SHA256SUMS. A matching hash checks the downloaded file against the published checksum; it is not a compatibility guarantee.
+On Windows PowerShell use `Get-FileHash .\firetv-revamp-0.3.0.apk -Algorithm SHA256` and compare with SHA256SUMS. A matching hash checks the downloaded file against the published checksum; it is not a compatibility guarantee.
 
 ## Report a problem
 

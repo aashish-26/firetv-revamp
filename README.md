@@ -20,7 +20,7 @@ A lightweight, offline Fire TV launcher with glass-style cards, a customizable d
 | Return to Amazon Home | [Recovery guide](docs/recovery.md) |
 | Suggest an improvement | [Open an issue](https://github.com/aashish-26/firetv-revamp/issues/new/choose) |
 
-**New in 0.2.0:** four static themes with matching greeting accents, three font choices, dedicated **Style** and **Apps** buttons, and a visual-reset action that leaves your dock and Home redirect preferences alone.
+**New in 0.3.0:** darker glass cards, a clear Outfit clock, “Welcome!” greeting, only Wi-Fi and Settings at the top, and gentler focus/scroll motion. Theme and font choices are under **Settings → Appearance**.
 
 ![Theme palette illustration](docs/images/themes.svg)
 
@@ -59,7 +59,7 @@ No automatic dependency installation, reboot, Home redirection, system debloatin
 Prefer manual installation or use Windows? Download the APK and SHA256SUMS from [Releases](https://github.com/aashish-26/firetv-revamp/releases), [verify the checksum](docs/youtube-viewers.md), then:
 
 ```sh
-adb -s YOUR_TV_IP:5555 install -r firetv-revamp-0.2.0.apk
+adb -s YOUR_TV_IP:5555 install -r firetv-revamp-0.3.0.apk
 adb -s YOUR_TV_IP:5555 shell am start -n io.github.aashish26.firetvrevamp/com.gathin.tvhome.MainActivity
 ```
 
@@ -75,7 +75,7 @@ The earlier personal launcher was tested on Redmi AFTMV00 / dahlia, Fire OS 7.7.
 
 [Watch the short MP4 demo](docs/showcase/personal-setup-demo.mp4) · [View still image](docs/showcase/personal-setup.jpg)
 
-This user-supplied recording shows the **personal Clean TV setup**, including its anime video wallpaper. The downloadable community v0.2.0 APK uses a static Nebula/Midnight theme and does not include these wallpaper files or video playback. This demo is not a performance benchmark. [Showcase details and media terms](docs/showcase/README.md).
+This user-supplied recording shows the **personal Clean TV setup**, including its anime video wallpaper. The downloadable community v0.3.0 APK uses a static Nebula/Midnight theme and does not include these wallpaper files or video playback. This demo is not a performance benchmark. [Showcase details and media terms](docs/showcase/README.md).
 
 ## Safety tools — separate and opt-in
 

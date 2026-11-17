@@ -14,7 +14,7 @@ Start with `bash scripts/install.sh --check` (macOS/Linux). It checks dependenci
 | Home opens Amazon | Installation alone does not enable redirect. Check the optional service in normal Accessibility Settings, if available; standalone use is supported |
 | Accessibility menu is unavailable | Keep standalone use. Do not write protected settings or disable stock Home |
 | Settings or input intent unavailable | Open original Fire TV Settings. Support varies by firmware |
-| No Style button | Confirm you installed community v0.2.0, not the older preview or personal build |
+| No Style button | In v0.3.0 use Settings → Appearance; the top bar intentionally contains only Wi-Fi and Settings |
 | Rollback says install was not confirmed | Inspect the local record and use [manual recovery](recovery.md). Automatic removal is blocked for incomplete installs |
 | Downgrade rejected | Keep the current app or use normal recovery; the installer does not clear data to bypass Android restrictions |
 

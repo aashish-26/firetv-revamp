@@ -1,12 +1,12 @@
 # Feature status
 
-| Feature | Community v0.2.0 |
+| Feature | Community v0.3.0 |
 |---|---|
 | Standalone offline launcher | Included |
 | Glass cards, favorites ordering, hiding apps | Included |
 | Four static theme presets and greeting accents | Included |
-| Three font families | Included |
-| Style and Apps shortcuts | Included |
+| Three label font families | Included; clock uses readable Outfit |
+| Top shortcuts | Wi-Fi and Settings only; appearance is inside Settings |
 | Clock toggle and visual-only reset | Included |
 | Guided macOS/Linux installer and APK backup | Included |
 | Readiness-only `--check` | Included; reads device information, no APK download/install |

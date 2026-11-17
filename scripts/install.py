@@ -15,11 +15,11 @@ from urllib.request import urlopen
 
 PACKAGE = 'io.github.aashish26.firetvrevamp'
 COMPONENT = PACKAGE + '/com.gathin.tvhome.MainActivity'
-VERSION = '0.2.0'
+VERSION = '0.3.0'
 APK = 'firetv-revamp-' + VERSION + '.apk'
 BASE = 'https://github.com/aashish-26/firetv-revamp/releases/download/v' + VERSION + '/'
 # Pinned to the verified, signed public preview. Changing releases requires review.
-SHA256 = '18835b68c36650bdee34d5ad74e1cae0c3a983871256231a11801344aabea1c7'
+SHA256 = '3ff914f818731a473e661badbb1c9e70b9e853f42a97531cbfbcada2a886c906'
 
 
 def run(args, timeout=60):

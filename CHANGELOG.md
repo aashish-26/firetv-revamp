@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0 — Dark glass and calmer navigation
+
+- Darker translucent cards/panels and inset app artwork.
+- “Welcome!” greeting, medium-weight Outfit clock with tabular numerals.
+- Wi-Fi and Settings only at the top; appearance choices moved into Settings.
+- Smaller focus magnification, reduced bounce, shorter entrance animation, bounded programmed scroll segments and cancellation of stale focus targets.
+- Same community identity/signing key. HDMI functionality is not disabled.
+- Corresponding personal build 2.7 installed on the owner’s Redmi TV; automated launch/Home/navigation checks performed. Physical playback, HDMI/audio and remote acceptance remain pending. The separately packaged public APK still needs its own physical test.
+
+
 ## 0.2.0 — Community styling preview
 
 - Original Nebula, Ocean, Ember and Midnight themes with matching greeting accents.

@@ -70,10 +70,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private TextView heroName;
     private View dockDot;
     // macOS dock magnification: focused icon and its neighbours grow from their bottom edge and lift.
-    private static final float DOCK_MAGNIFY = 1.30f;
-    private static final float DOCK_NEIGHBOUR = 1.10f;
-    private static final float DOCK_LIFT_DP = 10f;
-    private static final float DOCK_NEIGHBOUR_LIFT_DP = 4f;
+    private static final float DOCK_MAGNIFY = 1.18f;
+    private static final float DOCK_NEIGHBOUR = 1.04f;
+    private static final float DOCK_LIFT_DP = 6f;
+    private static final float DOCK_NEIGHBOUR_LIFT_DP = 2f;
     private GradientDrawable ambientGlow;
     private int ambientColor;
     private boolean heroShown;
@@ -89,6 +89,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private boolean glassShown;
     static volatile boolean isForeground;
     private int lastFocused = 0;
+    private RecyclerView.OnScrollListener pendingFocusScroll;
     private boolean networkRegistered;
     private final android.content.BroadcastReceiver packageChanges = new android.content.BroadcastReceiver() {
         @Override public void onReceive(Context c, Intent i) { if (adapter != null) adapter.invalidateMetadata(); }
@@ -159,7 +160,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         grid = findViewById(R.id.grid);
         // One span unit per cell of any dock size 1..COLUMNS: the dock row splits evenly, grid rows are COLUMNS wide.
         final int spans = lcmUpTo(COLUMNS);
-        GridLayoutManager glm = new GridLayoutManager(this, spans);
+        GridLayoutManager glm = new MotionGridLayoutManager(this, spans);
         glm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -201,14 +202,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         springX = new SpringAnimation(glass, DynamicAnimation.TRANSLATION_X);
         springY = new SpringAnimation(glass, DynamicAnimation.TRANSLATION_Y);
         for (SpringAnimation s : new SpringAnimation[]{springX, springY}) {
-            s.setSpring(new SpringForce().setStiffness(260f).setDampingRatio(0.58f));
+            s.setSpring(new SpringForce().setStiffness(350f).setDampingRatio(0.88f));
         }
 
-        View btnInputs = findViewById(R.id.btnInputs);
-        findViewById(R.id.btnStyle).setOnClickListener(v -> showAppearance());
-        findViewById(R.id.btnApps).setOnClickListener(v -> focusTile(adapter.dockCount() < adapter.getItemCount() ? adapter.dockCount() : 0));
         View btnSettings = findViewById(R.id.btnSettings);
-        btnInputs.setOnClickListener(v -> showInputs());
         btnWifi.setOnClickListener(v -> open(new Intent(Settings.ACTION_WIFI_SETTINGS)));
         btnSettings.setOnClickListener(v -> showSystemSettings(v));
         btnSettings.setOnLongClickListener(v -> { showHomeScreenMenu(v); return true; });
@@ -222,10 +219,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 return true;
             }
             if (keyCode == KeyEvent.KEYCODE_DPAD_UP) return true;
-            if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && v.getId() == R.id.btnInputs) return true;
+            if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && v.getId() == R.id.btnWifi) return true;
             return keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && v.getId() == R.id.btnSettings;
         };
-        btnInputs.setOnKeyListener(pillKeys);
         btnWifi.setOnKeyListener(pillKeys);
         btnSettings.setOnKeyListener(pillKeys);
 
@@ -282,6 +278,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     protected void onPause() {
         isForeground = false;
         liveBackdrop.setRunning(false);
+        if (pendingFocusScroll != null) {
+            grid.removeOnScrollListener(pendingFocusScroll); pendingFocusScroll = null;
+        }
+        grid.stopScroll();
         super.onPause();
         getSharedPreferences("tvhome", MODE_PRIVATE).edit().putInt("last_index", lastFocused)
                 .putString("last_pkg", adapter.pkgAt(lastFocused)).apply();
@@ -382,13 +382,13 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             card.setPivotX(card.getWidth() / 2f);
             card.setPivotY(card.getHeight());
             card.animate().scaleX(s).scaleY(s).translationY(-lift * density)
-                    .setDuration(220).setInterpolator(new DecelerateInterpolator()).start();
+                    .setDuration(180).setInterpolator(new DecelerateInterpolator()).start();
             // The shadow grows from the same point (the icon's bottom centre) so it stays under the icon.
             View shadow = item.findViewById(R.id.shadow);
             shadow.setPivotX(shadow.getWidth() / 2f);
             shadow.setPivotY(card.getBottom() - shadow.getTop());
             shadow.animate().scaleX(s).scaleY(s).translationY(-lift * density)
-                    .setDuration(220).setInterpolator(new DecelerateInterpolator()).start();
+                    .setDuration(180).setInterpolator(new DecelerateInterpolator()).start();
         }
     }
 
@@ -541,7 +541,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     private void showSystemSettings(View anchor) {
         String[] labels = {"Network", "Applications", "Remotes & Bluetooth", "Device & Software",
-                "Revamp preferences", "Full Amazon Settings (recovery)"};
+                "Revamp preferences", "Appearance", "Full Amazon Settings (recovery)"};
         String[] sections = {"tv.network.NetworkActivity", "tv.applications.ApplicationsActivity",
                 "tv.controllers_bluetooth_devices.ControllersAndBluetoothActivity", "tv.device.DeviceActivity"};
         showChoicePanel("Settings", labels, 0, which -> {
@@ -555,6 +555,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                         }
                     } else if (which == 4) {
                         showHomeScreenMenu(anchor);
+                    } else if (which == 5) {
+                        showAppearance();
                     } else {
                         // This is an explicit recovery choice, never an automatic side effect.
                         HomeRedirectService.setEnabled(this, false);
@@ -672,22 +674,28 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private void focusTile(int position) {
         if (adapter.getItemCount() == 0) return;
         final int pos = Math.max(0, Math.min(position, adapter.getItemCount() - 1));
+        if (pendingFocusScroll != null) {
+            grid.removeOnScrollListener(pendingFocusScroll); pendingFocusScroll = null;
+        }
+        grid.stopScroll();
         RecyclerView.ViewHolder vh = grid.findViewHolderForAdapterPosition(pos);
         if (vh != null) {
             vh.itemView.findViewById(R.id.card).requestFocus();
             return;
         }
         // Not laid out yet: scroll there, then focus once the scroll settles.
-        grid.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        pendingFocusScroll = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView rv, int newState) {
                 if (newState != RecyclerView.SCROLL_STATE_IDLE) return;
                 rv.removeOnScrollListener(this);
+                if (pendingFocusScroll == this) pendingFocusScroll = null;
                 RecyclerView.ViewHolder h = rv.findViewHolderForAdapterPosition(pos);
                 View target = h != null ? h.itemView.findViewById(R.id.card) : rv.getChildAt(0);
                 if (target != null) target.requestFocus();
             }
-        });
+        };
+        grid.addOnScrollListener(pendingFocusScroll);
         grid.smoothScrollToPosition(pos);
     }
 
@@ -707,9 +715,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     }
 
     private void updateGreeting() {
-        String text = getString(GREETINGS[dayPart()]);
-        String name = getString(R.string.user_name).trim();
-        greeting.setText((name.isEmpty() ? text : text + ", " + name) + "  /  FIRE TV REVAMP");
+        greeting.setText(R.string.welcome);
     }
 
     private void applyTypeface(View view) {
@@ -722,6 +728,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     private void applyAppearance() {
         applyTypeface(root);
+        TextView time = findViewById(R.id.clock);
+        time.setTypeface(getResources().getFont(R.font.outfit));
+        time.setFontVariationSettings("'wght' 400");
+        time.setFontFeatureSettings("tnum");
         greeting.setTextColor(Appearance.accent(this));
         if (adapter != null) adapter.notifyDataSetChanged();
     }
@@ -818,7 +828,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     /** Dropdown menu under the Inputs pill: HDMI ports (with connection state), AV and Live TV. */
     private void showInputs() {
-        View anchor = findViewById(R.id.btnInputs);
+        View anchor = findViewById(R.id.btnSettings);
         View panel = getLayoutInflater().inflate(R.layout.popup_inputs, root, false);
         LinearLayout rows = panel.findViewById(R.id.rows);
 

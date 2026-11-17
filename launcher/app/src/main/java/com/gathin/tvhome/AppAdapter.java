@@ -78,7 +78,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         }
     }
 
-    static final float FOCUS_SCALE = 1.10f;
+    static final float FOCUS_SCALE = 1.06f;
     static final float CORNER_RATIO = 0.25f;
 
     private final Context ctx;
@@ -241,6 +241,9 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         boolean art = e.square != null;
         h.card.setBackground(ctx.getDrawable(R.drawable.dock_tile_bg));
         h.banner.setImageDrawable(e.square);
+        int inset = (int) (5 * ctx.getResources().getDisplayMetrics().density);
+        h.banner.setPadding(inset, inset, inset, inset);
+        h.banner.setScaleType(ImageView.ScaleType.FIT_CENTER);
         h.banner.setVisibility(art ? View.VISIBLE : View.GONE);
         h.icon.setImageDrawable(art ? null : e.icon);
         h.icon.setVisibility(art ? View.GONE : View.VISIBLE);
@@ -369,8 +372,8 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
                 float s = focused ? FOCUS_SCALE : 1.0f;
                 if (!inDock) {
                     view.animate().scaleX(s).scaleY(s)
-                            .setDuration(focused ? 260 : 180)
-                            .setInterpolator(new OvershootInterpolator(focused ? 1.6f : 0f))
+                            .setDuration(focused ? 170 : 140)
+                            .setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f))
                             .start();
                 }
                 name.animate().alpha(focused ? 1f : 0.78f)
