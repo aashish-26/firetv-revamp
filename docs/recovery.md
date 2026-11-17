@@ -16,3 +16,7 @@ adb -s YOUR_TV_IP:5555 uninstall io.github.aashish26.firetvrevamp
 ```
 
 Uninstall removes community launcher preferences. It does not remove Amazon Home. No system packages were modified by installation or the audit tool. Keep previous APKs for upgrades; Android may reject downgrades. Do not clear data or uninstall merely to force a downgrade without accepting preference loss. If ADB is unavailable, use Fire TV Settings > Applications > Manage Installed Applications > Fire TV Revamp > Force stop / Uninstall and disable its Accessibility service.
+
+## Installer backups
+
+If you used the guided installer, see [installation.md](installation.md#roll-back) for recorded APK restoration or first-install removal. Neither method is a firmware restore; downgrade restrictions and preference compatibility still apply.

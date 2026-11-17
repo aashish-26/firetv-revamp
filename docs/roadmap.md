@@ -1,5 +1,7 @@
 # Small next enhancements
 
+Available now: guided macOS/Linux installation, device selection, pinned release checksums, local APK backups, recovery documentation and a clearly labelled personal showcase.
+
 These are proposed, not released features:
 
 - Physically test the separately packaged public APK and record exact model/firmware outcomes.
