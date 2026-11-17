@@ -1,5 +1,7 @@
 # Fire TV Revamp
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 ![Fire TV Revamp preview](docs/images/preview.svg)
 
 A lightweight, offline Fire TV launcher with glass-style cards, a customizable dock, hidden apps, clock controls and recovery access to Amazon Home. Includes a read-only ADB audit utility inspired by CleanYourTV.
