@@ -4,3 +4,4 @@ Fire TV fork: itsmeterrylin, https://github.com/itsmeterrylin/fire-tv-cleanup at
 Includes subsequent local launcher improvements and tests. Upstream copyright retained.
 Outfit and Open Sans fonts are separately licensed under SIL OFL; see licenses/.
 No personal media, device backups, signing keys or upstream installer scripts are distributed.
+Gradle wrapper: Gradle contributors, Apache-2.0; see licenses/Gradle-LICENSE.txt. AndroidX and JUnit dependencies retain their upstream licenses in their distributions.
