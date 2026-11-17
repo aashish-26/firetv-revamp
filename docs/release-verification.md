@@ -1,8 +1,8 @@
 # Release verification
 
-Community preview 0.1.0. Build, lint and HomePolicy unit tests passed. Four Python safety tests passed. No public-package runtime device test has been performed.
+Community preview 0.2.0. Build, lint and HomePolicy unit tests passed. Twelve Python installer/safety tests and twelve Java policy/visual-option tests passed. No public-package runtime device test has been performed.
 
-APK size: 1690411 bytes.
+APK size: 1699006 bytes.
 
 ```text
 Verifies

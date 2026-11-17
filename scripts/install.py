@@ -15,11 +15,11 @@ from urllib.request import urlopen
 
 PACKAGE = 'io.github.aashish26.firetvrevamp'
 COMPONENT = PACKAGE + '/com.gathin.tvhome.MainActivity'
-VERSION = '0.1.0'
+VERSION = '0.2.0'
 APK = 'firetv-revamp-' + VERSION + '.apk'
 BASE = 'https://github.com/aashish-26/firetv-revamp/releases/download/v' + VERSION + '/'
 # Pinned to the verified, signed public preview. Changing releases requires review.
-SHA256 = 'cabd7b8201d17d968ad66e4d6965d33eb0ecc1837ab476dc28fee7d41da40d69'
+SHA256 = '18835b68c36650bdee34d5ad74e1cae0c3a983871256231a11801344aabea1c7'
 
 
 def run(args, timeout=60):
@@ -97,6 +97,8 @@ def rollback(folder):
     serial = state['serial']
     if state.get('package') != PACKAGE:
         raise RuntimeError('This is not a Fire TV Revamp installation record')
+    if state.get('status') != 'installed':
+        raise RuntimeError('Install was not confirmed successful; inspect the record and use manual recovery instead of automatic uninstall.')
     if run(adb(serial, 'get-state')) != 'device':
         raise RuntimeError('Original device is unavailable')
     print('First disable Fire TV Revamp in TV Settings > Accessibility, if enabled.')
@@ -193,14 +195,23 @@ def install(serial):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--serial', help='Explicit connected, authorized ADB device serial')
+    parser.add_argument('--check', action='store_true', help='Check device readiness without downloading or installing')
     parser.add_argument('--rollback', type=Path, help='Local install backup directory to restore')
     args = parser.parse_args()
     if sys.platform not in ('darwin', 'linux'):
         raise RuntimeError('This guided installer supports macOS and Linux; use manual ADB instructions on other systems.')
     if not shutil.which('adb'):
         raise RuntimeError('ADB is missing. macOS: brew install --cask android-platform-tools; Linux: install your distro android-tools-adb/adb package, or Google Platform Tools. Nothing is installed automatically.')
+    if args.rollback and args.check:
+        raise RuntimeError('--check and --rollback cannot be combined')
     if args.rollback:
         rollback(args.rollback.resolve())
+    elif args.check:
+        serial = choose_device(args.serial)
+        print('Model: ' + run(adb(serial, 'shell', 'getprop', 'ro.product.model')))
+        print('Android API: ' + run(adb(serial, 'shell', 'getprop', 'ro.build.version.sdk')))
+        print('Community app: ' + (run(adb(serial, 'shell', 'pm', 'list', 'packages', PACKAGE)) or 'not installed'))
+        print('Readiness inspection complete; no download or TV settings/package changes.')
     else:
         install(choose_device(args.serial))
 

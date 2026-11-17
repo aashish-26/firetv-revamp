@@ -17,7 +17,7 @@ bash scripts/install.sh
 
 Select a device number even if only one is listed. If none is authorized, the script offers to connect to an IP/hostname and port. You can also connect manually with `adb connect YOUR_TV_IP:5555` then rerun. To explicitly target an authorized device, use `bash scripts/install.sh --serial YOUR_TV_IP:5555`.
 
-The installer targets release v0.1.0, not an unverified latest download. It verifies the downloaded APK against SHA256SUMS and the pinned hash in the installer. GitHub HTTPS is required. Checksum mismatch, incompatible Android version, failed prior-APK backup or unavailable selected device stops installation. Select only your own TV.
+The installer targets release v0.2.0, not an unverified latest download. It verifies the downloaded APK against SHA256SUMS and the pinned hash in the installer. GitHub HTTPS is required. Checksum mismatch, incompatible Android version, failed prior-APK backup or unavailable selected device stops installation. Select only your own TV.
 
 Confirm the displayed model/serial before installation. `adb install -r` preserves existing app data on a compatible update. Android enforces signing compatibility; the script does not bypass signature errors or automatically uninstall to fix them. The personal `com.gathin.tvhome` app is a different app and is left untouched.
 
@@ -52,3 +52,7 @@ If install fails or is interrupted, inspect the installation record. No retry, u
 ## System debloating
 
 Intentionally separate. `tools/audit.py` is read-only and opt-in. This installer does not run it or any package disabling. Do not copy another TV model's disable list. Review dependencies and keep individual, reversible change records before any separately approved cleanup.
+
+## Inspect before installing
+
+Run `bash scripts/install.sh --check` to select an authorized device and read its model, Android API and community package state. No release download or APK install occurs. It may start the local ADB server or offer a device connection prompt.

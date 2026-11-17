@@ -6,6 +6,22 @@ A lightweight, offline Fire TV launcher with glass-style cards, a customizable d
 
 **An Android app, not replacement firmware.** Amazon Home remains installed and enabled. Optional accessibility redirection is experimental and can be interrupted by Fire OS updates. No root, network blocking or system debloat runs automatically.
 
+## Start here
+
+| I want to… | Go to |
+|---|---|
+| Install on macOS / Linux | [Easy installation](#easy-installation--macos--linux) |
+| Check my TV without installing | `bash scripts/install.sh --check` |
+| Change themes, fonts or controls | [Customization guide](docs/customization.md) |
+| Understand what is included | [Feature status](docs/features.md) |
+| Fix connection or installation problems | [Troubleshooting](docs/troubleshooting.md) |
+| Return to Amazon Home | [Recovery guide](docs/recovery.md) |
+| Suggest an improvement | [Open an issue](https://github.com/aashish-26/firetv-revamp/issues/new/choose) |
+
+**New in 0.2.0:** four static themes with matching greeting accents, three font choices, dedicated **Style** and **Apps** buttons, and a visual-reset action that leaves your dock and Home redirect preferences alone.
+
+![Theme palette illustration](docs/images/themes.svg)
+
 ## Coming from YouTube?
 
 Read the [viewer quick start](docs/youtube-viewers.md), [wallpaper details](docs/wallpapers.md), and [planned enhancements](docs/roadmap.md). The video shows a personal build; the public preview uses original static artwork and does not include live wallpaper.
@@ -41,7 +57,7 @@ No automatic dependency installation, reboot, Home redirection, system debloatin
 Prefer manual installation or use Windows? Download the APK and SHA256SUMS from [Releases](https://github.com/aashish-26/firetv-revamp/releases), [verify the checksum](docs/youtube-viewers.md), then:
 
 ```sh
-adb -s YOUR_TV_IP:5555 install -r firetv-revamp-0.1.0.apk
+adb -s YOUR_TV_IP:5555 install -r firetv-revamp-0.2.0.apk
 adb -s YOUR_TV_IP:5555 shell am start -n io.github.aashish26.firetvrevamp/com.gathin.tvhome.MainActivity
 ```
 
@@ -57,7 +73,7 @@ The earlier personal launcher was tested on Redmi AFTMV00 / dahlia, Fire OS 7.7.
 
 [Watch the short MP4 demo](docs/showcase/personal-setup-demo.mp4) · [View still image](docs/showcase/personal-setup.jpg)
 
-This user-supplied recording shows the **personal Clean TV setup**, including its anime video wallpaper. The downloadable community v0.1.0 APK uses a static Nebula/Midnight theme and does not include these wallpaper files or video playback. This demo is not a performance benchmark. [Showcase details and media terms](docs/showcase/README.md).
+This user-supplied recording shows the **personal Clean TV setup**, including its anime video wallpaper. The downloadable community v0.2.0 APK uses a static Nebula/Midnight theme and does not include these wallpaper files or video playback. This demo is not a performance benchmark. [Showcase details and media terms](docs/showcase/README.md).
 
 ## Safety tools — separate and opt-in
 

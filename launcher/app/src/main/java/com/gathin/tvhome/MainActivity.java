@@ -205,6 +205,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
 
         View btnInputs = findViewById(R.id.btnInputs);
+        findViewById(R.id.btnStyle).setOnClickListener(v -> showAppearance());
+        findViewById(R.id.btnApps).setOnClickListener(v -> focusTile(adapter.dockCount() < adapter.getItemCount() ? adapter.dockCount() : 0));
         View btnSettings = findViewById(R.id.btnSettings);
         btnInputs.setOnClickListener(v -> showInputs());
         btnWifi.setOnClickListener(v -> open(new Intent(Settings.ACTION_WIFI_SETTINGS)));
@@ -256,6 +258,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         ambient.setAlpha(0f);
         adapter.reload();
         // Keep return-to-app navigation free of a full grid entrance animation.
+        applyAppearance();
         updateGreeting();
         updateBackground();
         updateWifiLabel();
@@ -538,7 +541,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     private void showSystemSettings(View anchor) {
         String[] labels = {"Network", "Applications", "Remotes & Bluetooth", "Device & Software",
-                "Clean TV preferences", "Full Amazon Settings (recovery)"};
+                "Revamp preferences", "Full Amazon Settings (recovery)"};
         String[] sections = {"tv.network.NetworkActivity", "tv.applications.ApplicationsActivity",
                 "tv.controllers_bluetooth_devices.ControllersAndBluetoothActivity", "tv.device.DeviceActivity"};
         showChoicePanel("Settings", labels, 0, which -> {
@@ -569,7 +572,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         panel.setBackgroundResource(R.drawable.glass_panel);
         TextView heading = new TextView(this);
         heading.setText(title); heading.setTextSize(22); heading.setTextColor(0xFFF0F6FF);
-        heading.setTypeface(getResources().getFont(R.font.outfit));
+        heading.setTypeface(Appearance.font(this));
         heading.setPadding(pad, 0, pad, pad);
         panel.addView(heading);
         int width = (int) Math.min(520 * density,
@@ -581,7 +584,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             int index = i;
             TextView row = new TextView(this);
             row.setText(labels[i]); row.setTextSize(17);
-            row.setTypeface(getResources().getFont(R.font.open_sans));
+            row.setTypeface(Appearance.font(this));
             row.setTextColor(getColorStateList(R.color.nebula_row_text));
             row.setGravity(Gravity.CENTER_VERTICAL); row.setPadding(pad, 0, pad, 0);
             row.setFocusable(true); row.setFocusableInTouchMode(true); row.setClickable(true);
@@ -620,11 +623,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             findViewById(R.id.ampm).setVisibility(visibility);
         });
         addInputRow(rows, popup, R.drawable.ic_info, "Wallpaper theme", -1, () -> {
-            String[] titles = {"Nebula — original artwork", "Midnight — black"};
-            String[] modes = {"nebula", "black"};
+            String[] titles = Appearance.THEMES;
+
             showChoicePanel("Choose your universe", titles,
-                    java.util.Arrays.asList(modes).indexOf(ui.getString("wallpaper_mode", "nebula")), selected -> {
-                        ui.edit().putString("wallpaper_mode", modes[selected]).apply();
+                    Appearance.selected(this, "theme", titles.length), selected -> {
+                        ui.edit().putInt("theme", selected).remove("wallpaper_mode").apply();
+                        applyAppearance();
                         updateBackground();
                     });
         });
@@ -708,12 +712,54 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         greeting.setText((name.isEmpty() ? text : text + ", " + name) + "  /  FIRE TV REVAMP");
     }
 
+    private void applyTypeface(View view) {
+        if (view instanceof TextView) ((TextView) view).setTypeface(Appearance.font(this));
+        if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+            for (int i = 0; i < group.getChildCount(); i++) applyTypeface(group.getChildAt(i));
+        }
+    }
+
+    private void applyAppearance() {
+        applyTypeface(root);
+        greeting.setTextColor(Appearance.accent(this));
+        if (adapter != null) adapter.notifyDataSetChanged();
+    }
+
+    private void showAppearance() {
+        showChoicePanel("Make it yours", new String[]{"Theme & accent", "Font family", "Clock visibility", "Reset visual preferences"}, 0, choice -> {
+            android.content.SharedPreferences prefs = getSharedPreferences("ui", MODE_PRIVATE);
+            if (choice == 0) {
+                showChoicePanel("Theme & accent", Appearance.THEMES,
+                        Appearance.selected(this, "theme", Appearance.THEMES.length), selected -> {
+                    prefs.edit().putInt("theme", selected).remove("wallpaper_mode").apply();
+                    applyAppearance(); updateBackground();
+                });
+            } else if (choice == 1) {
+                showChoicePanel("Font family", Appearance.FONTS,
+                        Appearance.selected(this, "font", Appearance.FONTS.length), selected -> {
+                    prefs.edit().putInt("font", selected).apply(); applyAppearance();
+                });
+            } else if (choice == 2) {
+                boolean visible = !prefs.getBoolean("clock", true);
+                prefs.edit().putBoolean("clock", visible).apply();
+                findViewById(R.id.clock).setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+                findViewById(R.id.ampm).setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+            } else {
+                prefs.edit().remove("theme").remove("font").remove("wallpaper_mode").putBoolean("clock", true).apply();
+                findViewById(R.id.clock).setVisibility(View.VISIBLE);
+                findViewById(R.id.ampm).setVisibility(View.VISIBLE);
+                applyAppearance(); updateBackground();
+            }
+        });
+    }
+
     private void updateBackground() {
         String mode = getSharedPreferences("ui", MODE_PRIVATE).getString("wallpaper_mode", "nebula");
-        boolean black = "black".equals(mode);
+        boolean black = Appearance.selected(this, "theme", Appearance.THEMES.length) == 3 || "black".equals(mode);
         bgPhoto.setVisibility(black ? View.INVISIBLE : View.VISIBLE);
         liveBackdrop.setRunning(isForeground && "live".equals(mode));
-        if (!black) bgPhoto.setImageResource(R.drawable.nebula);
+        if (!black) bgPhoto.setImageResource(Appearance.background(this));
     }
 
     /** Shows the Wi-Fi network name on the button when we can read it, otherwise the connection type. */

@@ -29,4 +29,6 @@
     <string name="move_right">Move Right</string>
     <string name="app_info">App Info</string>
     <string name="dock_full">Dock is full. Unpin an app first.</string>
+    <string name="apps_button">Apps</string>
+    <string name="style_button">Style</string>
 </resources>

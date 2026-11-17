@@ -226,6 +226,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
     public void onBindViewHolder(@NonNull Holder h, int position) {
         Entry e = items.get(position);
         h.name.setText(e.label);
+        h.name.setTypeface(Appearance.font(ctx));
         boolean docked = isDocked(position);
         h.name.setVisibility(docked ? View.INVISIBLE : View.VISIBLE);   // the dock uses the tooltip instead
         h.name.setAlpha(0.78f);

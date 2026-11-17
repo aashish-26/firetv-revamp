@@ -50,4 +50,24 @@ class InstallerTests(unittest.TestCase):
         with patch.object(i, 'run', return_value='List of devices attached\nother device'):
             with self.assertRaises(RuntimeError): i.choose_device('wanted:5555')
 
+class RecoveryTests(unittest.TestCase):
+    def test_unconfirmed_install_cannot_trigger_automatic_removal(self):
+        import json
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            (folder / 'installation.json').write_text(json.dumps({'serial':'fake:5555', 'package':i.PACKAGE, 'status':'preparing', 'previous_apks':[]}))
+            with patch.object(i, 'run') as run:
+                with self.assertRaises(RuntimeError): i.rollback(folder)
+                run.assert_not_called()
+
+    def test_readiness_never_downloads_or_installs(self):
+        commands = []
+        def fake(cmd, **kwargs):
+            commands.append(cmd)
+            return '28' if 'ro.build.version.sdk' in cmd else 'test'
+        with patch.object(i.sys, 'argv', ['install.py', '--check']), patch.object(i.shutil, 'which', return_value='/fake/adb'), patch.object(i, 'choose_device', return_value='fake:5555'), patch.object(i, 'run', side_effect=fake), patch.object(i, 'download') as download:
+            i.main()
+            download.assert_not_called()
+        self.assertFalse(any('install' in cmd or 'uninstall' in cmd for cmd in commands))
+
 if __name__ == '__main__': unittest.main()

@@ -9,6 +9,6 @@ The creator's personal setup used:
 
 These assets are not covered by this project's MIT code license. No redistribution permission has been recorded. Once an original source/license and permission are verified, any permitted media will have separate attribution and terms. If redistribution is not permitted, we can document an authorized source link instead.
 
-Public v0.1.0 ships original static Nebula and Midnight themes. It has no custom wallpaper importer or live-video playback. Do not expect copying a media file to the TV to activate it in this release.
+Public v0.2.0 ships original static Nebula and Midnight themes. It has no custom wallpaper importer or live-video playback. Do not expect copying a media file to the TV to activate it in this release.
 
 The original project preview graphic is in `docs/images/preview.svg`. It is illustrative artwork rather than a screenshot. Future showcase screenshots should use distributable artwork and omit account/device information.
